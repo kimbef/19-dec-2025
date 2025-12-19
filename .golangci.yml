@@ -1,0 +1,74 @@
+run:
+  timeout: 5m
+  tests: true
+  modules-download-mode: readonly
+
+linters-settings:
+  errcheck:
+    check-type-assertions: true
+    check-blank: true
+  
+  govet:
+    check-shadowing: true
+    enable-all: true
+  
+  gofmt:
+    simplify: true
+  
+  gocyclo:
+    min-complexity: 15
+  
+  dupl:
+    threshold: 100
+  
+  misspell:
+    locale: US
+  
+  lll:
+    line-length: 120
+  
+  goconst:
+    min-len: 3
+    min-occurrences: 3
+
+linters:
+  enable:
+    - errcheck
+    - gosimple
+    - govet
+    - ineffassign
+    - staticcheck
+    - typecheck
+    - unused
+    - gofmt
+    - goimports
+    - misspell
+    - goconst
+    - dupl
+    - lll
+    - unparam
+    - nakedret
+    - prealloc
+    - exportloopref
+  
+  disable:
+    - structcheck
+    - varcheck
+    - deadcode
+
+issues:
+  exclude-use-default: false
+  exclude-rules:
+    - path: _test\.go
+      linters:
+        - dupl
+        - gosec
+        - goconst
+    - linters:
+        - lll
+      source: "^//go:generate "
+
+output:
+  format: colored-line-number
+  print-issued-lines: true
+  print-linter-name: true
