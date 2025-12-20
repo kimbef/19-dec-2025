@@ -57,7 +57,13 @@ func Recovery(log *logger.Logger) func(http.Handler) http.Handler {
 
 					w.Header().Set("Content-Type", "application/json")
 					w.WriteHeader(http.StatusInternalServerError)
-					w.Write([]byte(`{"success":false,"error":{"code":"INTERNAL_ERROR","message":"Internal server error"}}`))
+					if _, writeErr := w.Write([]byte(`{"success":false,"error":{"code":"INTERNAL_ERROR","message":"Internal server error"}}`)); writeErr != nil {
+						log.WithFields(map[string]interface{}{
+							"write_error": writeErr,
+							"method":      r.Method,
+							"path":        r.URL.Path,
+						}).Error("Failed to write recovery response")
+					}
 				}
 			}()
 
