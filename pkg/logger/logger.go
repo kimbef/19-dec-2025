@@ -46,8 +46,11 @@ func NewDefault() *Logger {
 	config := zap.NewProductionConfig()
 	config.OutputPaths = []string{"stdout"}
 	config.ErrorOutputPaths = []string{"stderr"}
-	
-	baseLogger, _ := config.Build()
+
+	baseLogger, err := config.Build()
+	if err != nil {
+		panic("failed to build default logger: " + err.Error())
+	}
 	return &Logger{
 		SugaredLogger: baseLogger.Sugar(),
 	}
