@@ -66,14 +66,23 @@ func Load() (*Config, error) {
 	return cfg, nil
 }
 
-// ConnectionString returns PostgreSQL connection string
-func (d *DatabaseConfig) ConnectionString() string {
+// FullConnectionString returns the full PostgreSQL connection string including the password.
+// This should only be used for establishing database connections and must never be logged.
+func (d *DatabaseConfig) FullConnectionString() string {
 	return fmt.Sprintf(
 		"host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
 		d.Host, d.Port, d.User, d.Password, d.DBName, d.SSLMode,
 	)
 }
 
+// ConnectionString returns a sanitized PostgreSQL connection string suitable for logging.
+// The password is redacted to avoid leaking credentials in logs or error messages.
+func (d *DatabaseConfig) ConnectionString() string {
+	return fmt.Sprintf(
+		"host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
+		d.Host, d.Port, d.User, "****", d.DBName, d.SSLMode,
+	)
+}
 // getEnv gets environment variable or returns default value
 func getEnv(key, defaultValue string) string {
 	if value := os.Getenv(key); value != "" {
