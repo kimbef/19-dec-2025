@@ -371,16 +371,28 @@ func (h *Handler) ListBuilds(c *gin.Context) {
 	defer rows.Close()
 
 	var builds []models.Build
+	var scanErr error
 	for rows.Next() {
 		var b models.Build
 		if err := rows.Scan(&b.ID, &b.PipelineID, &b.BuildNumber, &b.Status, &b.Branch, &b.CommitHash,
 			&b.StartedAt, &b.FinishedAt, &b.Duration, &b.CreatedAt, &b.UpdatedAt); err != nil {
 			h.log.Error("Failed to scan build", zap.Error(err))
-			continue
+			scanErr = err
+			break
 		}
 		builds = append(builds, b)
 	}
 
+	if scanErr != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch builds"})
+		return
+	}
+
+	if err := rows.Err(); err != nil {
+		h.log.Error("Row iteration error while listing builds", zap.Error(err))
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch builds"})
+		return
+	}
 	if builds == nil {
 		builds = []models.Build{}
 	}
