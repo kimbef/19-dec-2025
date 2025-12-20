@@ -87,8 +87,21 @@ func main() {
 
 	log.Info("Shutting down server...")
 
+	// Determine graceful shutdown timeout from environment, defaulting to 30s.
+	shutdownTimeout := 30 * time.Second
+	if v := os.Getenv("GRACEFUL_SHUTDOWN_TIMEOUT"); v != "" {
+		if d, err := time.ParseDuration(v); err == nil {
+			shutdownTimeout = d
+		} else {
+			log.Warn("Invalid GRACEFUL_SHUTDOWN_TIMEOUT value, using default",
+				zap.String("value", v),
+				zap.Error(err),
+			)
+		}
+	}
+
 	// Create shutdown context with timeout
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), shutdownTimeout)
 	defer cancel()
 
 	// Attempt graceful shutdown
