@@ -181,7 +181,7 @@ func (r *ItemRepository) List(ctx context.Context, page, perPage int) ([]models.
 	}
 	defer rows.Close()
 
-	var items []models.Item
+	items := make([]models.Item, 0, perPage)
 	for rows.Next() {
 		var item models.Item
 		if err := rows.Scan(
