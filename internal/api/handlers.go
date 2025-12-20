@@ -242,18 +242,40 @@ func (h *Handler) UpdatePipeline(c *gin.Context) {
 		return
 	}
 
+	// Treat empty strings as "no update" by passing NULL to the query.
+	var nameParam interface{}
+	if req.Name == "" {
+		nameParam = nil
+	} else {
+		nameParam = req.Name
+	}
+
+	var descriptionParam interface{}
+	if req.Description == "" {
+		descriptionParam = nil
+	} else {
+		descriptionParam = req.Description
+	}
+
+	var statusParam interface{}
+	if req.Status == "" {
+		statusParam = nil
+	} else {
+		statusParam = req.Status
+	}
+
 	query := `
 		UPDATE pipelines
-		SET name = COALESCE(NULLIF($1, ''), name),
-		    description = COALESCE(NULLIF($2, ''), description),
-		    status = COALESCE(NULLIF($3, ''), status),
+		SET name = COALESCE($1, name),
+		    description = COALESCE($2, description),
+		    status = COALESCE($3, status),
 		    updated_at = CURRENT_TIMESTAMP
 		WHERE id = $4 AND deleted_at IS NULL
 		RETURNING id, name, description, status, created_at, updated_at, deleted_at
 	`
 
 	var p models.Pipeline
-	err = h.db.QueryRow(query, req.Name, req.Description, req.Status, id).Scan(
+	err = h.db.QueryRow(query, nameParam, descriptionParam, statusParam, id).Scan(
 		&p.ID, &p.Name, &p.Description, &p.Status, &p.CreatedAt, &p.UpdatedAt, &p.DeletedAt,
 	)
 	if err == sql.ErrNoRows {
