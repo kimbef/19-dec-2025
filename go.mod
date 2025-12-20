@@ -1,9 +1,7 @@
-module github.com/kimbef/19-dec-2025
+module example.com/19-dec-2025
 
-go 1.24.11
+go 1.22
 
 require (
-	github.com/lib/pq v1.10.9 // indirect
-	go.uber.org/multierr v1.10.0 // indirect
-	go.uber.org/zap v1.27.1 // indirect
+	github.com/gorilla/mux v1.8.0 // sha ae97657cadc00c489df09069c5672db8674784ee
 )
