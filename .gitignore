@@ -7,6 +7,8 @@
 *.dll
 *.so
 *.dylib
+bin/
+/api
 
 # Test binary, built with `go test -c`
 *.test
@@ -30,3 +32,11 @@ go.work.sum
 # Editor/IDE
 # .idea/
 # .vscode/
+
+# Build artifacts
+dist/
+tmp/
+
+# OS files
+.DS_Store
+Thumbs.db
