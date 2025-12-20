@@ -42,9 +42,9 @@ func New(cfg Config) *Server {
 
 	// Apply middleware
 	handler := middleware.Chain(
-		middleware.Recovery(cfg.Logger),
 		middleware.Logger(cfg.Logger),
 		middleware.CORS(),
+		middleware.Recovery(cfg.Logger),
 	)(mux)
 
 	httpServer := &http.Server{
