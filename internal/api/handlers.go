@@ -129,11 +129,17 @@ func (h *Handler) ListPipelines(c *gin.Context) {
 		var p models.Pipeline
 		if err := rows.Scan(&p.ID, &p.Name, &p.Description, &p.Status, &p.CreatedAt, &p.UpdatedAt, &p.DeletedAt); err != nil {
 			h.log.Error("Failed to scan pipeline", zap.Error(err))
-			continue
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch pipelines"})
+			return
 		}
 		pipelines = append(pipelines, p)
 	}
 
+	if err := rows.Err(); err != nil {
+		h.log.Error("Error iterating over pipelines rows", zap.Error(err))
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch pipelines"})
+		return
+	}
 	if pipelines == nil {
 		pipelines = []models.Pipeline{}
 	}
