@@ -48,7 +48,6 @@ linters:
     - unparam
     - nakedret
     - prealloc
-    - exportloopref
   
   disable:
     - structcheck
