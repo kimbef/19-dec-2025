@@ -103,5 +103,5 @@ type: Opaque
 stringData:
   db-host: "postgres-service"
   db-user: "postgres"
-  db-password: "CHANGE_ME"
+  db-password: "<DB_PASSWORD>"
   db-name: "cicd_app"
