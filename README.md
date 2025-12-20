@@ -292,10 +292,11 @@ See `deployments/k8s/` directory for example Kubernetes manifests.
 | `DB_USER` | Database user | `postgres` |
 | `DB_PASSWORD` | Database password | `postgres` |
 | `DB_NAME` | Database name | `cicd_app` |
-| `DB_SSLMODE` | Database SSL mode | `disable` |
+| `DB_SSLMODE` | Database SSL mode | `require` |
 | `LOG_LEVEL` | Logging level | `info` |
 | `LOG_FORMAT` | Log format (json/text) | `json` |
 
+**Security note:** For non-local environments, use a secure SSL mode such as `require` or `verify-full`. The `disable` mode should only be used for local development with trusted connections (for example, when connecting to a PostgreSQL instance on `localhost`).
 ## 🔄 CI/CD Pipeline
 
 The GitHub Actions workflow automatically:
